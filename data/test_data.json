@@ -1,0 +1,127 @@
+{
+  "_comment": "假数据文件 — 后端 API 开发完成后删除此文件，并将 app.js 中 USE_MOCK 设为 false",
+
+  "recommendations": {
+    "scoreSummary": {
+      "score": 658,
+      "unit": "分",
+      "province": "浙江省",
+      "subjects": "物理 · 化学 · 生物"
+    },
+    "segments": [
+      { "label": "全部", "value": "all", "active": true },
+      { "label": "冲一冲", "value": "chong" },
+      { "label": "稳一稳", "value": "wen" },
+      { "label": "保一保", "value": "bao" }
+    ],
+    "list": [
+      {
+        "segment": "chong",
+        "badgeText": "冲一冲",
+        "school": "浙江大学",
+        "major": "计算机科学与技术",
+        "reason": "你的位次接近去年该专业录取线，且选考科目完全匹配。今年该专业在浙江扩招 12 人，机会较大。",
+        "lastRank": "11,200",
+        "lastAvgScore": "675"
+      },
+      {
+        "segment": "chong",
+        "badgeText": "冲一冲",
+        "school": "复旦大学",
+        "major": "人工智能",
+        "reason": "该校人工智能专业近年热度较高，你的分数略低于去年均分，可作为冲高志愿尝试。",
+        "lastRank": "10,500",
+        "lastAvgScore": "680"
+      },
+      {
+        "segment": "wen",
+        "badgeText": "稳一稳",
+        "school": "南京大学",
+        "major": "软件工程",
+        "reason": "你的位次高于该专业近三年平均录取位次，录取概率较高。专业评级 A+，就业前景优秀。",
+        "lastRank": "14,800",
+        "lastAvgScore": "660"
+      },
+      {
+        "segment": "wen",
+        "badgeText": "稳一稳",
+        "school": "中国科学技术大学",
+        "major": "电子信息类",
+        "reason": "你的位次与该专业录取位次高度匹配，且选考科目符合要求，录取稳定性强。",
+        "lastRank": "13,500",
+        "lastAvgScore": "662"
+      },
+      {
+        "segment": "bao",
+        "badgeText": "保一保",
+        "school": "武汉大学",
+        "major": "信息安全",
+        "reason": "你的位次明显高于该专业录取线，录取把握极大。该校在该领域为国家重点实验室，资源丰富。",
+        "lastRank": "18,500",
+        "lastAvgScore": "650"
+      },
+      {
+        "segment": "bao",
+        "badgeText": "保一保",
+        "school": "四川大学",
+        "major": "计算机科学与技术",
+        "reason": "你的分数显著高于该专业近三年录取线，作为保底选择非常稳妥，建议放在志愿后半段。",
+        "lastRank": "20,000",
+        "lastAvgScore": "640"
+      }
+    ]
+  },
+
+  "probability": {
+    "scoreSummary": {
+      "score": 658,
+      "unit": "分",
+      "summary": "浙江省 · 物化生"
+    },
+    "segments": [
+      { "label": "冲一冲", "value": "chong", "active": true },
+      { "label": "稳一稳", "value": "wen" },
+      { "label": "保一保", "value": "bao" }
+    ],
+    "preview": {
+      "school": "浙江大学",
+      "major": "计算机科学与技术",
+      "badgeText": "免费预览",
+      "badgeType": "chong",
+      "probability": 32,
+      "reason": "你的位次接近该专业近三年平均录取线，且选考科目完全匹配。该校今年在该专业扩招 12 人，录取概率有所提升。"
+    },
+    "locked": {
+      "school": "上海交通大学"
+    },
+    "upgrade": {
+      "icon": "\ud83d\udd13",
+      "title": "解锁全部概率预测",
+      "desc": "查看 12 所院校的录取概率与 AI 详细分析",
+      "ctaText": "升级会员 · \u00a59.9"
+    }
+  },
+
+  "schoolDetail": {
+    "name": "浙江大学",
+    "tags": ["985 · 211 · 双一流"],
+    "badge": { "type": "chong", "text": "冲一冲" },
+    "location": "\ud83d\udccd 浙江省杭州市",
+    "admissionData": [
+      { "value": "11,200", "label": "去年位次" },
+      { "value": "658", "label": "去年均分" },
+      { "value": "32%", "label": "预测概率", "highlight": true }
+    ],
+    "aiAnalysis": "你的位次接近该专业近三年平均录取线，属于「冲一冲」梯度。该校计算机科学与技术为国家级一流本科专业，今年计划在浙江扩招 12 人，录取概率相比去年有所提升。\n\n<strong style=\"color: var(--color-warning);\">\u26a0 风险提示：</strong>该专业去年实际录取位次波动较大（11,000–13,500），建议搭配稳一稳梯度的院校作为保底选择。",
+    "similarRecommendations": [
+      { "name": "杭州电子科技大学", "major": "计算机类", "probability": "58%" }
+    ]
+  },
+
+  "generatingSteps": [
+    { "label": "分析成绩与位次", "status": "done" },
+    { "label": "匹配院校与专业", "status": "doing" },
+    { "label": "计算录取概率", "status": "pending" },
+    { "label": "生成推荐方案", "status": "pending" }
+  ]
+}

@@ -1,0 +1,20 @@
+# ── 不打包进 Docker 镜像的文件 ──
+__pycache__/
+*.pyc
+*.pyo
+*.db
+*.log
+logs/
+server.log
+test_request.json
+.gitignore
+
+# ── 部署配置（已在 Dockerfile 中单独引用）──
+deploy/
+
+# ── 本地开发工具 ──
+start_server.bat
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

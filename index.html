@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>高考志愿填报助手</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- ============================================ -->
+    <!-- 第1屏：首页 - 预填意向                        -->
+    <!-- ============================================ -->
+    <div class="page" id="page-home">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="content-wrapper">
+        <!-- 问候区 -->
+        <div class="greeting-section">
+          <div class="greeting-row">
+            <div class="greeting" id="greeting-text">你好，同学 👋</div>
+            <button class="logout-btn" id="logout-btn">退出</button>
+          </div>
+          <div class="subtitle">提前准备志愿填报，让选择更从容</div>
+        </div>
+
+        <!-- Hero 卡片 -->
+        <div class="hero-card" data-nav="page-score">
+          <div class="hero-title">2027 高考志愿方案</div>
+          <div class="hero-desc">输入你的成绩与偏好，AI 为你生成个性化志愿填报方案</div>
+        </div>
+
+        <!-- 功能入口 -->
+        <div class="feature-grid">
+          <button class="feature-item" data-nav="page-score">
+            <span class="feature-icon">📝</span>
+            <span class="feature-label">填写意向</span>
+          </button>
+          <button class="feature-item" data-nav="page-results">
+            <span class="feature-icon">📋</span>
+            <span class="feature-label">查看方案</span>
+          </button>
+          <button class="feature-item">
+            <span class="feature-icon">📖</span>
+            <span class="feature-label">填报指南</span>
+          </button>
+        </div>
+
+        <!-- CTA -->
+        <button class="cta-btn" data-nav="page-score">开始志愿填报</button>
+      </div>
+
+      <!-- 底部导航 -->
+      <div class="tab-bar">
+        <div class="tab-pill">
+          <div class="tab-item active" data-tab="home">
+            <svg class="tab-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 7l6-4.5L15 7v8.5H3V7z"/>
+            </svg>
+            <span class="tab-label">首页</span>
+          </div>
+          <div class="tab-item" data-tab="plan">
+            <svg class="tab-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="2" width="14" height="14" rx="2"/>
+              <path d="M6 8h6M6 11h4"/>
+            </svg>
+            <span class="tab-label">方案</span>
+          </div>
+          <div class="tab-item" data-tab="guide">
+            <svg class="tab-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="9" cy="9" r="6.5"/>
+              <path d="M9 6v4M9 12.5v.5"/>
+            </svg>
+            <span class="tab-label">指南</span>
+          </div>
+          <div class="tab-item" data-tab="profile">
+            <svg class="tab-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="9" cy="6" r="3"/>
+              <path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+            </svg>
+            <span class="tab-label">我的</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 第2屏：成绩输入                                -->
+    <!-- ============================================ -->
+    <div class="page" id="page-score">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="content-wrapper">
+        <!-- 导航头部 -->
+        <div class="nav-header">
+          <button class="back-btn" aria-label="返回">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <span class="title">成绩输入</span>
+        </div>
+
+        <!-- 进度条 -->
+        <div class="progress-bar">
+          <div class="step done"></div>
+          <div class="step active"></div>
+          <div class="step" style="background: var(--color-border)"></div>
+        </div>
+
+        <!-- 表单卡片 -->
+        <div class="card" style="display: flex; flex-direction: column; gap: var(--space-xl);">
+          <!-- 省份 -->
+          <div class="form-row">
+            <span class="label">所在省份</span>
+            <div class="input select" id="province-trigger">
+              <span id="province-display">浙江省</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4">
+                <polyline points="4 6 8 10 12 6"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 选考科目 -->
+          <div class="form-row">
+            <span class="label">选考科目（选 3 门）</span>
+            <div class="subject-grid" id="subject-grid"></div>
+          </div>
+
+          <!-- 高考总分 -->
+          <div class="form-row">
+            <span class="label">高考总分<em class="required">*</em></span>
+            <input class="input" id="score-input" type="text" placeholder="请输入高考总分" inputmode="numeric" maxlength="3">
+            <span class="field-hint" id="score-hint" style="display:none;">请输入高考总分</span>
+          </div>
+
+          <!-- 省内位次 -->
+          <div class="form-row">
+            <span class="label">省内位次（选填）</span>
+            <input class="input" type="text" placeholder="如：第 12000 名" inputmode="numeric">
+          </div>
+        </div>
+
+        <!-- 下一步 -->
+        <button class="cta-btn" id="next-to-preference">下一步</button>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 第3屏：志愿偏好                                -->
+    <!-- ============================================ -->
+    <div class="page" id="page-preference">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="content-wrapper">
+        <!-- 导航头部 -->
+        <div class="nav-header">
+          <button class="back-btn" aria-label="返回">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <span class="title">志愿偏好</span>
+        </div>
+
+        <!-- 进度条 -->
+        <div class="progress-bar">
+          <div class="step done"></div>
+          <div class="step active"></div>
+          <div class="step" style="background: var(--color-border)"></div>
+        </div>
+
+        <!-- 偏好表单 -->
+        <div class="card" style="display: flex; flex-direction: column; gap: 22px;">
+
+          <!-- 院校层次 -->
+          <div class="form-row">
+            <span class="label">目标院校层次</span>
+            <div class="chip-row" id="school-level-chips"></div>
+          </div>
+
+          <!-- 目标地域 -->
+          <div class="form-row">
+            <span class="label">目标地域</span>
+            <div class="input select" id="region-select">
+              <span id="region-display">不限地域</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4">
+                <polyline points="4 6 8 10 12 6"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 专业方向 -->
+          <div class="form-row">
+            <span class="label">目标专业方向</span>
+            <div class="chip-row" id="major-chips"></div>
+          </div>
+
+          <!-- 优先策略 -->
+          <div class="form-row">
+            <span class="label">优先策略</span>
+            <div class="strategy-grid" id="strategy-grid"></div>
+          </div>
+        </div>
+
+        <!-- 生成按钮 -->
+        <button class="cta-btn" id="cta-to-generating">生成志愿方案</button>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 第4屏：正在生成                                -->
+    <!-- ============================================ -->
+    <div class="page" id="page-generating">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="content-wrapper" style="justify-content: center;">
+        <div class="generating-container">
+          <!-- 脉冲图标 -->
+          <div class="pulse-ring">
+            <span class="ai-icon">✦</span>
+          </div>
+
+          <div>
+            <div class="generating-title">AI 正在为你生成志愿方案</div>
+            <div class="generating-subtitle" style="margin-top: 8px;">综合你的成绩、位次与偏好进行深度分析</div>
+          </div>
+
+          <!-- 步骤列表 -->
+          <div class="steps-list" id="generating-steps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 第5屏：志愿方案（冲稳保）                      -->
+    <!-- ============================================ -->
+    <div class="page" id="page-results">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="content-wrapper">
+        <!-- 导航头部 -->
+        <div class="nav-header centered">
+          <span class="title">志愿方案</span>
+        </div>
+
+        <!-- 分数摘要 -->
+        <div class="score-card">
+          <div class="score-label">你的成绩</div>
+          <div class="score-value" id="results-score-value"></div>
+          <div class="score-tags" id="results-score-tags"></div>
+        </div>
+
+        <!-- 分段控件 -->
+        <div class="segment-control" id="results-segments"></div>
+
+        <!-- 推荐列表 -->
+        <div class="recommendation-list" id="recommendation-list" style="display: flex; flex-direction: column; gap: 14px;"></div>
+      </div>
+
+      <!-- 底部导航 -->
+      <div class="tab-bar">
+        <div class="tab-pill">
+          <div class="tab-item" data-tab="home">
+            <svg class="tab-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 7l6-4.5L15 7v8.5H3V7z"/>
+            </svg>
+            <span class="tab-label">首页</span>
+          </div>
+          <div class="tab-item active" data-tab="plan">
+            <svg class="tab-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="2" width="14" height="14" rx="2"/>
+              <path d="M6 8h6M6 11h4"/>
+            </svg>
+            <span class="tab-label">方案</span>
+          </div>
+          <div class="tab-item" data-tab="guide">
+            <svg class="tab-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="9" cy="9" r="6.5"/>
+              <path d="M9 6v4M9 12.5v.5"/>
+            </svg>
+            <span class="tab-label">指南</span>
+          </div>
+          <div class="tab-item" data-tab="profile">
+            <svg class="tab-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="9" cy="6" r="3"/>
+              <path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+            </svg>
+            <span class="tab-label">我的</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 第6屏：录取概率预测                            -->
+    <!-- ============================================ -->
+    <div class="page" id="page-probability">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="content-wrapper">
+        <!-- 导航头部 -->
+        <div class="nav-header">
+          <button class="back-btn" aria-label="返回">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <span class="title">录取概率预测</span>
+        </div>
+
+        <!-- 分数摘要 -->
+        <div class="score-card" style="padding: var(--space-lg);">
+          <div class="score-label">你的成绩</div>
+          <div class="score-value" style="font-size: var(--fs-title); margin-bottom: var(--space-sm);" id="prob-score-value"></div>
+          <div class="score-tags" id="prob-score-tags"></div>
+        </div>
+
+        <!-- 分段控件 -->
+        <div class="segment-control" id="prob-segments"></div>
+
+        <!-- 概率列表 -->
+        <div id="prob-cards" style="display: flex; flex-direction: column; gap: 6px;"></div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 第7屏：方案详情                                -->
+    <!-- ============================================ -->
+    <div class="page" id="page-detail">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="content-wrapper">
+        <!-- 导航头部 -->
+        <div class="nav-header">
+          <button class="back-btn" aria-label="返回">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <span class="title">院校详情</span>
+        </div>
+
+        <!-- 院校 Hero -->
+        <div class="school-hero" id="detail-hero"></div>
+
+        <!-- 录取数据 -->
+        <div class="card" style="padding: var(--space-lg);">
+          <div style="font-size: var(--fs-body); font-weight: 600; margin-bottom: var(--space-md);">录取数据</div>
+          <div class="data-grid" id="detail-data-grid"></div>
+        </div>
+
+        <!-- AI 分析 -->
+        <div class="ai-analysis">
+          <div class="ai-header">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round">
+              <circle cx="9" cy="9" r="7"/>
+              <path d="M9 5.5v3.5l2.5 1.5"/>
+            </svg>
+            <span class="ai-badge">AI 分析</span>
+          </div>
+          <div class="ai-content" id="detail-ai-content"></div>
+        </div>
+
+        <!-- 相似推荐 -->
+        <div style="font-size: var(--fs-body); font-weight: 600;">相似推荐</div>
+        <div id="detail-similar"></div>
+
+        <!-- 操作栏 -->
+        <div class="action-bar">
+          <button class="cta-btn secondary" id="detail-fav-btn" style="flex: 1;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-right: 4px;">
+              <path d="M8 3v10M4 7l4-4 4 4" transform="translate(0, 1)"/>
+            </svg>
+            收藏
+          </button>
+          <button class="cta-btn" id="detail-add-btn" style="flex: 1;">加入方案</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 登录/注册页                                    -->
+    <!-- ============================================ -->
+    <div class="page" id="page-auth">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="content-wrapper" style="justify-content: center;">
+        <div class="auth-container">
+          <!-- Logo -->
+          <div class="auth-logo">
+            <span class="auth-icon">🎓</span>
+          </div>
+          <div class="auth-title">高考志愿填报助手</div>
+          <div class="auth-subtitle">AI 驱动的个性化志愿推荐</div>
+
+          <!-- Tab switch -->
+          <div class="auth-tabs">
+            <button class="auth-tab active" data-auth-tab="login">登录</button>
+            <button class="auth-tab" data-auth-tab="register">注册</button>
+          </div>
+
+          <!-- Login form -->
+          <div class="auth-form" id="auth-login-form">
+            <div class="form-row">
+              <input class="input" id="login-phone" type="tel" placeholder="手机号" maxlength="11" inputmode="numeric">
+            </div>
+            <div class="form-row">
+              <input class="input" id="login-password" type="password" placeholder="密码" maxlength="50">
+            </div>
+            <div class="auth-error" id="login-error"></div>
+            <button class="cta-btn" id="login-submit">登录</button>
+          </div>
+
+          <!-- Register form (hidden by default) -->
+          <div class="auth-form" id="auth-register-form" style="display: none;">
+            <div class="form-row">
+              <input class="input" id="register-phone" type="tel" placeholder="手机号" maxlength="11" inputmode="numeric">
+            </div>
+            <div class="form-row">
+              <input class="input" id="register-nickname" type="text" placeholder="昵称（选填）" maxlength="50">
+            </div>
+            <div class="form-row">
+              <input class="input" id="register-password" type="password" placeholder="密码（至少6位）" maxlength="50">
+            </div>
+            <div class="auth-error" id="register-error"></div>
+            <button class="cta-btn" id="register-submit">注册</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 省份选择器（底部弹出）                          -->
+    <!-- ============================================ -->
+    <div class="picker-overlay" id="province-overlay">
+      <div class="picker-sheet" id="province-sheet">
+        <div class="picker-handle"></div>
+        <div class="picker-header">
+          <span class="picker-title">选择省份</span>
+          <button class="picker-close" id="province-close" aria-label="关闭">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <line x1="4" y1="4" x2="14" y2="14"/>
+              <line x1="14" y1="4" x2="4" y2="14"/>
+            </svg>
+          </button>
+        </div>
+        <div class="picker-search">
+          <svg class="picker-search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="7" cy="7" r="5"/>
+            <line x1="11" y1="11" x2="14" y2="14"/>
+          </svg>
+          <input type="text" id="province-search" class="picker-search-input" placeholder="搜索省份" />
+        </div>
+        <div class="picker-list" id="province-list"></div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 地域选择器（底部弹出）                          -->
+    <!-- ============================================ -->
+    <div class="picker-overlay" id="region-overlay">
+      <div class="picker-sheet" id="region-sheet">
+        <div class="picker-handle"></div>
+        <div class="picker-header">
+          <span class="picker-title">选择目标地域</span>
+          <button class="picker-close" id="region-close" aria-label="关闭">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <line x1="4" y1="4" x2="14" y2="14"/>
+              <line x1="14" y1="4" x2="4" y2="14"/>
+            </svg>
+          </button>
+        </div>
+        <div class="picker-list" id="region-list"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/app.js?v=20260729anim"></script>
+</body>
+</html>

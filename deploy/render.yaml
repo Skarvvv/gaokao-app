@@ -1,0 +1,31 @@
+# Render.com Blueprint — 高考志愿填报 App
+# https://render.com/docs/blueprint-spec
+# 使用方法：将此文件放在仓库根目录，在 Render 控制台 New > Blueprint 选择仓库即可
+
+services:
+  - type: web
+    name: gaokao-zhiyuan-app
+    runtime: docker
+    plan: free
+    dockerContext: .
+    dockerfilePath: ./deploy/Dockerfile.render
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      # ── 必填（生产模式）──
+      # 在 Render 控制台手动设置（sync: false = 不从 YAML 同步，需在 UI 填入）
+      - key: LLM_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      # ── 开发模式（测试用，自动填充默认值）──
+      # 设为 true 后，即使不设 LLM_API_KEY/JWT_SECRET 也能启动
+      # 正式上线时改为 false 或删除此项，并设置上面的两个变量
+      - key: GAOKAO_DEV_MODE
+        value: "true"
+      # ── 可选：数据库（默认用 SQLite，数据在容器重启后丢失）──
+      # 如需持久化，在 Render 控制台添加 PostgreSQL 或 MySQL 数据库
+      # 然后设置 DATABASE_URL，格式：
+      # mysql+pymysql://user:password@host:3306/gaokao_app
+      # - key: DATABASE_URL
+      #   sync: false

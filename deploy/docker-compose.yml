@@ -1,0 +1,85 @@
+# ============================================
+# docker-compose.yml — 高考志愿填报 App
+# ============================================
+# 一键启动: docker compose up -d
+# 查看日志: docker compose logs -f
+# 停止:     docker compose down
+# ============================================
+
+version: "3.8"
+
+services:
+  # ── 后端 API ──
+  app:
+    build:
+      context: ..           # gaokao-app/ 目录
+      dockerfile: deploy/Dockerfile
+    container_name: gaokao-app
+    restart: unless-stopped
+    env_file:
+      - .env               # 环境变量文件（从 .env.example 复制并填写）
+    ports:
+      - "8000:8000"
+    volumes:
+      - app-db:/app/data    # SQLite 数据持久化
+      - app-logs:/app/logs  # 日志持久化
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - gaokao-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ── MySQL (生产数据库) ──
+  # MVP 阶段可注释掉此服务，使用 SQLite
+  mysql:
+    image: mysql:8.0
+    container_name: gaokao-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-gaokao_root_2026}
+      MYSQL_DATABASE: gaokao_app
+      MYSQL_USER: gaokao
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-gaokao_app_2026}
+    ports:
+      - "3306:3306"          # 仅内网需要时可去掉端口映射
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - gaokao-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Nginx 反向代理 ──
+  nginx:
+    image: nginx:alpine
+    container_name: gaokao-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"           # HTTPS 需要配置证书
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro    # SSL 证书目录（如需 HTTPS）
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - gaokao-net
+
+volumes:
+  app-db:
+  app-logs:
+  mysql-data:
+
+networks:
+  gaokao-net:
+    driver: bridge

@@ -1,0 +1,12 @@
+{
+  "defaultProvince": "浙江省",
+  "maxSubjects": 3,
+  "subjects": [
+    { "name": "物理", "selected": true },
+    { "name": "化学", "selected": true },
+    { "name": "生物", "selected": true },
+    { "name": "政治", "selected": false },
+    { "name": "历史", "selected": false },
+    { "name": "地理", "selected": false }
+  ]
+}

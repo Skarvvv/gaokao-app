@@ -1,0 +1,35 @@
+{
+  "schoolLevels": [
+    { "name": "985", "selected": true },
+    { "name": "211", "selected": true },
+    { "name": "双一流", "selected": true },
+    { "name": "普通本科", "selected": false },
+    { "name": "不限", "selected": false }
+  ],
+  "regions": [
+    "不限地域",
+    "华东地区",
+    "华北地区",
+    "华南地区",
+    "华中地区",
+    "西南地区",
+    "西北地区",
+    "东北地区"
+  ],
+  "majors": [
+    { "name": "计算机", "selected": true },
+    { "name": "电子信息", "selected": false },
+    { "name": "医学", "selected": false },
+    { "name": "金融经济", "selected": false },
+    { "name": "法学", "selected": false },
+    { "name": "师范教育", "selected": false },
+    { "name": "建筑土木", "selected": false },
+    { "name": "不限", "selected": false }
+  ],
+  "strategies": [
+    { "name": "院校优先", "icon": "\ud83c\udfeb", "selected": true },
+    { "name": "专业优先", "icon": "\ud83d\udcda", "selected": false },
+    { "name": "城市优先", "icon": "\ud83c\udfd9", "selected": false },
+    { "name": "冲稳保均衡", "icon": "\u2696\ufe0f", "selected": false }
+  ]
+}

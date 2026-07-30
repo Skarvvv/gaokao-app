@@ -1,0 +1,53 @@
+# ============================================
+# Dockerfile.render — 适配 Render.com 免费版
+# ============================================
+# 与 Dockerfile 的区别：
+#   1. 使用 $PORT 环境变量（Render 自动注入）
+#   2. 单 worker（免费版 512MB 内存，多 worker 会 OOM）
+#   3. Shell form CMD 以支持变量展开
+
+FROM python:3.13-slim
+
+# ── 系统依赖 ──
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# ── 工作目录 ──
+WORKDIR /app
+
+# ── 先复制依赖文件，利用 Docker 缓存层 ──
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir pymysql
+
+# ── 复制后端代码 ──
+COPY backend/ .
+
+# ── 复制前端文件 ──
+COPY css/ /app/frontend/css/
+COPY js/ /app/frontend/js/
+COPY data/ /app/frontend/data/
+COPY index.html /app/frontend/index.html
+
+# ── 环境变量 ──
+ENV FRONTEND_DIR=/app/frontend
+ENV GAOKAO_DEV_MODE=true
+# Render 会自动注入 PORT 变量（通常 10000）
+# uvicorn 通过 SERVER_PORT 读取端口
+ENV SERVER_HOST=0.0.0.0
+
+# ── 日志目录 ──
+RUN mkdir -p /app/logs
+
+# ── 非 root 用户 ──
+RUN groupadd -r appuser && useradd -r -g appuser appuser \
+    && chown -R appuser:appuser /app
+USER appuser
+
+# ── 端口（Render 会读取此值）──
+EXPOSE 10000
+
+# ── 启动命令 ──
+# Shell form: 展开 $PORT 变量；单 worker 适配免费版
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-10000} --workers 1 --log-level info"]

@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Database
+*.db
+
+# Logs (auto-created by logging_config.py)
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Environment (contains secrets — NEVER commit!)
+.env
+.env.local
+.env.production
+
+# Server logs
+server.log
