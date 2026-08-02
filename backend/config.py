@@ -21,10 +21,18 @@ To switch to MySQL:
 
 import os
 
+# ── Dev mode flag ──
+# GAOKAO_DEV_MODE=true allows missing env vars to fall back to dev defaults.
+# Production MUST NOT set this flag — missing env vars will cause startup failure.
+_IS_DEV = os.environ.get("GAOKAO_DEV_MODE", "").lower() in ("true", "1", "yes")
+
 # ── LLM Provider ──
 # SiliconFlow: free models available, new users get 20M tokens
-# Production: MUST set LLM_API_KEY via env var (no fallback)
+# Production: MUST set LLM_API_KEY via env var
+# Dev mode: falls back to a shared free-tier key
 LLM_API_KEY = os.environ.get("LLM_API_KEY", "")
+if not LLM_API_KEY and _IS_DEV:
+    LLM_API_KEY = "sk-hgazhgdjmyywcugftkxeksagvqvddyxtxefbywvaarlbszwm"
 
 # SiliconFlow endpoint (OpenAI-compatible)
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.siliconflow.cn/v1")
@@ -50,12 +58,16 @@ DATABASE_URL = os.environ.get(
 )
 
 # ── JWT Auth ──
-# Production: MUST set JWT_SECRET via env var (no fallback!)
+# Production: MUST set JWT_SECRET via env var
+# Dev mode: falls back to a dev-only secret
 JWT_SECRET = os.environ.get("JWT_SECRET", "")
+if not JWT_SECRET and _IS_DEV:
+    JWT_SECRET = "gaokao-app-dev-secret-change-in-production"
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_DAYS = int(os.environ.get("JWT_EXPIRE_DAYS", "7"))
 
 # ── Server ──
 SERVER_HOST = os.environ.get("SERVER_HOST", "0.0.0.0")
-SERVER_PORT = int(os.environ.get("SERVER_PORT", "8000"))
+# Render.com provides $PORT env var; default to 8000 for local dev
+SERVER_PORT = int(os.environ.get("PORT", os.environ.get("SERVER_PORT", "8000")))
 SERVER_WORKERS = int(os.environ.get("SERVER_WORKERS", "1"))  # >1 requires MySQL

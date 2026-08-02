@@ -41,6 +41,8 @@ from config import LLM_API_KEY, JWT_SECRET, DATABASE_URL, SERVER_HOST, SERVER_PO
 # ============================================
 # 启动环境检查
 # ============================================
+# config.py 在 GAOKAO_DEV_MODE=true 时已自动填充 dev 默认值
+# 这里只检查生产模式下是否缺失必填项
 
 _MISSING = []
 if not LLM_API_KEY:
@@ -49,24 +51,12 @@ if not JWT_SECRET:
     _MISSING.append("JWT_SECRET")
 
 if _MISSING:
-    # Allow missing env vars in dev mode (with warnings)
     import sys
-    _is_dev = "--reload" in sys.argv or os.environ.get("GAOKAO_DEV_MODE", "")
-    if _is_dev:
-        print(f"[WARN] Missing env vars: {', '.join(_MISSING)} — using dev defaults")
-        # Dev defaults
-        if not LLM_API_KEY:
-            os.environ["LLM_API_KEY"] = "sk-hgazhgdjmyywcugftkxeksagvqvddyxtxefbywvaarlbszwm"
-        if not JWT_SECRET:
-            os.environ["JWT_SECRET"] = "gaokao-app-dev-secret-change-in-production"
-        # Re-import config to pick up the defaults
-        import importlib
-        importlib.reload(__import__("config"))
-    else:
-        print(f"[ERROR] Required env vars not set: {', '.join(_MISSING)}")
-        print("Set them via .env file or environment variables before starting the server.")
-        print("See deploy/.env.example for reference.")
-        sys.exit(1)
+    print(f"[ERROR] Required env vars not set: {', '.join(_MISSING)}")
+    print("Either set GAOKAO_DEV_MODE=true for dev defaults,")
+    print("or set them via environment variables before starting the server.")
+    print("See deploy/.env.example for reference.")
+    sys.exit(1)
 
 # ============================================
 # 配置
@@ -169,6 +159,16 @@ async def unified_http_exception_handler(request: Request, exc: FastAPIHTTPExcep
     return JSONResponse(
         status_code=exc.status_code,
         content=error(exc.status_code, str(exc.detail)),
+    )
+
+
+@app.exception_handler(Exception)
+async def catch_all_exception_handler(request: Request, exc: Exception):
+    """捕获所有未处理异常，确保始终返回 JSON 而非纯文本"""
+    logger.error("[API] 未处理异常: %s", exc, exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content=error(500, f"服务器内部错误: {exc}"),
     )
 
 
