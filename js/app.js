@@ -678,8 +678,12 @@
     if (provinceSearch) provinceSearch.value = '';
     provinceOverlay.classList.add('active');
     setTimeout(() => {
-      const sel = provinceList.querySelector('.picker-item.selected');
-      if (sel) sel.scrollIntoView({ block: 'center' });
+      var sel = provinceList.querySelector('.picker-item.selected');
+      if (sel) {
+        // Only scroll within picker-list — scrollIntoView would also scroll ancestor .page containers
+        var offset = sel.offsetTop - provinceList.offsetTop;
+        provinceList.scrollTop = offset - provinceList.clientHeight / 2 + sel.offsetHeight / 2;
+      }
     }, 50);
   }
 
