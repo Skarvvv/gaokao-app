@@ -639,6 +639,31 @@
   let selectedRegion = '不限地域';
   let regionOverlay, regionTrigger, regionDisplay, regionClose, regionList;
 
+  // ============================================
+  // Picker scroll position save/restore
+  // Prevents page scroll position from shifting when picker opens/closes
+  // ============================================
+  var _savedScrollTop = 0;
+
+  function _getActiveScrollTop() {
+    var activePage = document.querySelector('.page.active');
+    if (!activePage) return 0;
+    var cw = activePage.querySelector('.content-wrapper');
+    if (cw) return cw.scrollTop;
+    return activePage.scrollTop || 0;
+  }
+
+  function _restoreActiveScrollTop(saved) {
+    var activePage = document.querySelector('.page.active');
+    if (!activePage) return;
+    var cw = activePage.querySelector('.content-wrapper');
+    if (cw) {
+      cw.scrollTop = saved;
+    } else {
+      activePage.scrollTop = saved;
+    }
+  }
+
   function renderProvinceList(filter) {
     if (!provinceList || !appData.provinces) return;
     filter = (filter || '').toLowerCase().trim();
@@ -676,6 +701,8 @@
     if (!provinceOverlay) return;
     renderProvinceList('');
     if (provinceSearch) provinceSearch.value = '';
+    // Save scroll position of the active page's content-wrapper to restore on close
+    _savedScrollTop = _getActiveScrollTop();
     provinceOverlay.classList.add('active');
     setTimeout(() => {
       var sel = provinceList.querySelector('.picker-item.selected');
@@ -689,7 +716,12 @@
 
   function closeProvincePicker() {
     if (!provinceOverlay) return;
+    // Blur search input first to prevent browser from scrolling page to show focused element
+    if (provinceSearch) provinceSearch.blur();
     provinceOverlay.classList.remove('active');
+    // Restore scroll position after picker closes
+    _restoreActiveScrollTop(_savedScrollTop);
+    _savedScrollTop = 0;
   }
 
   function initProvincePicker() {
@@ -708,6 +740,11 @@
     }
     if (provinceOverlay) {
       provinceOverlay.addEventListener('click', e => { if (e.target === provinceOverlay) closeProvincePicker(); });
+      // Prevent touchmove on overlay backdrop from scrolling the page behind it (iOS Safari compat)
+      provinceOverlay.addEventListener('touchmove', function(e) {
+        if (provinceList && provinceList.contains(e.target)) return;
+        e.preventDefault();
+      }, { passive: false });
     }
     if (provinceSearch) {
       provinceSearch.addEventListener('input', e => renderProvinceList(e.target.value));
@@ -745,12 +782,15 @@
   function openRegionPicker() {
     if (!regionOverlay) return;
     renderRegionList();
+    _savedScrollTop = _getActiveScrollTop();
     regionOverlay.classList.add('active');
   }
 
   function closeRegionPicker() {
     if (!regionOverlay) return;
     regionOverlay.classList.remove('active');
+    _restoreActiveScrollTop(_savedScrollTop);
+    _savedScrollTop = 0;
   }
 
   function initRegionPicker() {
@@ -768,6 +808,10 @@
     }
     if (regionOverlay) {
       regionOverlay.addEventListener('click', function (e) { if (e.target === regionOverlay) closeRegionPicker(); });
+      regionOverlay.addEventListener('touchmove', function(e) {
+        if (regionList && regionList.contains(e.target)) return;
+        e.preventDefault();
+      }, { passive: false });
     }
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && regionOverlay && regionOverlay.classList.contains('active')) closeRegionPicker();

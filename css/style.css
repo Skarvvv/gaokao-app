@@ -169,6 +169,7 @@ body {
   flex-direction: column;
   gap: var(--space-2xl);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .page:has(.tab-bar) .content-wrapper {
@@ -1488,6 +1489,7 @@ body {
   transition: opacity 0.25s ease;
   display: flex;
   align-items: flex-end;
+  overscroll-behavior: contain;
 }
 
 .picker-overlay.active {
@@ -1602,6 +1604,7 @@ body {
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: var(--space-sm) var(--space-xl) var(--space-xl);
 }
 
