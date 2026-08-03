@@ -56,8 +56,6 @@
   --space-2xl: 24px;
   --space-3xl: 32px;
 
-  /* 状态栏高度 */
-  --status-bar-height: 62px;
   /* 底部导航高度 */
   --tab-bar-height: 86px;
 }
@@ -102,28 +100,6 @@ body {
   overflow: hidden;
   position: relative;
   box-shadow: var(--shadow-lg);
-}
-
-/* ============================================
-   状态栏
-   ============================================ */
-
-.status-bar {
-  height: var(--status-bar-height);
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 20px;
-  position: relative;
-  z-index: 10;
-  background: var(--color-bg);
-}
-
-.status-bar .time {
-  font-size: var(--fs-body);
-  font-weight: 600;
-  color: var(--color-text);
 }
 
 /* ============================================
