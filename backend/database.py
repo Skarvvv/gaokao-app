@@ -37,6 +37,7 @@ else:
         "max_overflow": 5,       # extra connections under load
         "pool_recycle": 1800,    # recycle connections every 30 min (avoid server timeout)
         "pool_pre_ping": True,   # test connection before use (auto-reconnect)
+        "connect_args": {"connect_timeout": 10},  # fail fast (10s) instead of hanging
     })
 
 engine = create_engine(DATABASE_URL, **_engine_kwargs)
@@ -55,6 +56,17 @@ def get_db():
 
 
 def init_db():
-    """Create all tables. Called once on application startup."""
-    Base.metadata.create_all(bind=engine)
-    logger.info("[DB] Tables created/verified — engine=%s", DATABASE_URL.split("://")[0])
+    """Create all tables. Called once on application startup.
+
+    Resilient: if the database is unreachable (e.g. IPv6/IPv4 mismatch,
+    network issues, Render free-tier limitations), the app will still
+    start — routes that need DB will fail individually rather than
+    crashing the whole process.
+    """
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("[DB] Tables created/verified — engine=%s", DATABASE_URL.split("://")[0])
+    except Exception as exc:
+        logger.error("[DB] init_db() failed — database unreachable: %s", exc)
+        logger.warning("[DB] App will start without DB. DB-dependent routes will fail until the database is available.")
+        logger.warning("[DB] If using Supabase, make sure to use the POOLER connection string (IPv4), not the direct connection (IPv6).")

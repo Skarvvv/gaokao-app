@@ -49,8 +49,11 @@ LLM_TIMEOUT = int(os.environ.get("LLM_TIMEOUT", "120"))  # seconds
 
 # ── Database ──
 # SQLite for development (auto-created in backend/ dir)
-# PostgreSQL for production (recommended — Supabase free tier 500MB):
-#   postgresql://postgres:password@db.xxxxxx.supabase.co:5432/postgres
+# PostgreSQL for production — Supabase free tier 500MB:
+#   ⚠️ Use the POOLER connection string (IPv4), NOT the direct connection (IPv6)!
+#   Direct:  postgresql://postgres:[PWD]@db.xxxxxx.supabase.co:5432/postgres     ← IPv6, fails on Render/Heroku
+#   Pooler:  postgresql://postgres.xxxxxx:[PWD]@aws-0-[region].pooler.supabase.com:6543/postgres  ← IPv4, works everywhere
+#   Find it: Supabase Dashboard → Project Settings → Database → Connection string → "Connection pooling" / "Transaction pooler"
 # MySQL also supported:
 #   mysql+pymysql://user:password@localhost:3306/gaokao_app
 _DB_DIR = os.path.dirname(os.path.abspath(__file__))
