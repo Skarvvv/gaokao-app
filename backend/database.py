@@ -2,11 +2,15 @@
 ========================
 SQLAlchemy ORM setup.
 
-Current: SQLite (zero-install, perfect for development)
-To switch to MySQL: change DATABASE_URL in config.py to:
-    mysql+pymysql://user:password@localhost:3306/gaokao_app
-And install pymysql:  pip install pymysql
-No other code changes needed.
+Supports:
+  - SQLite (default, zero-install, perfect for development)
+  - PostgreSQL (recommended for production — e.g. Supabase free tier)
+  - MySQL (also supported)
+
+Switching databases only requires changing DATABASE_URL in config.py:
+  PostgreSQL: postgresql://user:pass@host:5432/dbname
+  MySQL:      mysql+pymysql://user:pass@host:3306/dbname
+  SQLite:     sqlite:///./gaokao.db
 """
 
 from sqlalchemy import create_engine
@@ -17,12 +21,25 @@ from logging_config import get_logger
 
 logger = get_logger("db")
 
-# check_same_thread=False: SQLite needs this for FastAPI's threaded request handling
-engine = create_engine(
-    DATABASE_URL,
-    echo=False,
-    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
-)
+_is_sqlite = DATABASE_URL.startswith("sqlite")
+
+# Build engine kwargs based on database type
+_engine_kwargs = {"echo": False}
+
+if _is_sqlite:
+    # SQLite needs this for FastAPI's threaded request handling
+    _engine_kwargs["connect_args"] = {"check_same_thread": False}
+else:
+    # PostgreSQL / MySQL: configure connection pool to avoid stale connections
+    # and limit concurrent connections (important for free-tier databases)
+    _engine_kwargs.update({
+        "pool_size": 5,          # base connections kept open
+        "max_overflow": 5,       # extra connections under load
+        "pool_recycle": 1800,    # recycle connections every 30 min (avoid server timeout)
+        "pool_pre_ping": True,   # test connection before use (auto-reconnect)
+    })
+
+engine = create_engine(DATABASE_URL, **_engine_kwargs)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

@@ -18,7 +18,7 @@ WORKDIR /app
 COPY backend/requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir pymysql  # MySQL support (optional, won't break SQLite)
+    && pip install --no-cache-dir psycopg2-binary pymysql
 
 # ── 复制后端代码 ──
 COPY backend/ .

@@ -19,7 +19,7 @@ WORKDIR /app
 # ── 先复制依赖文件，利用 Docker 缓存层 ──
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir pymysql
+    && pip install --no-cache-dir psycopg2-binary
 
 # ── 复制后端代码 ──
 COPY backend/ .

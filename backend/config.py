@@ -49,8 +49,10 @@ LLM_TIMEOUT = int(os.environ.get("LLM_TIMEOUT", "120"))  # seconds
 
 # ── Database ──
 # SQLite for development (auto-created in backend/ dir)
-# MySQL for production: set DATABASE_URL env var
-#   e.g. mysql+pymysql://user:password@localhost:3306/gaokao_app
+# PostgreSQL for production (recommended — Supabase free tier 500MB):
+#   postgresql://postgres:password@db.xxxxxx.supabase.co:5432/postgres
+# MySQL also supported:
+#   mysql+pymysql://user:password@localhost:3306/gaokao_app
 _DB_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE_URL = os.environ.get(
     "DATABASE_URL",
